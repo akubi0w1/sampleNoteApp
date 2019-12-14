@@ -16,13 +16,13 @@ func main() {
 	dbHandler := database.NewSQLHandler()
 
 	// TODO: create handler
-	userHandler := handler.NewUserHandler(dbHandler)
+	appHandler := handler.NewAppHandler(dbHandler)
 
 	// TODO: create new server
 	serv := server.NewServer(servConf.Addr, servConf.Port)
 
 	// TODO: routing
-	router.SetUpRouting(serv, userHandler)
+	router.SetUpRouting(serv, appHandler)
 
 	// TODO: start app
 	serv.Serve()

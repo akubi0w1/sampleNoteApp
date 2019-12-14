@@ -1,14 +1,5 @@
 package config
 
-type DBConfig struct {
-	Driver   string
-	Host     string
-	Port     string
-	User     string
-	Password string
-	Database string
-}
-
 func LoadDBConfig() *DBConfig {
 	return &DBConfig{
 		Driver:   "mysql",
@@ -18,4 +9,13 @@ func LoadDBConfig() *DBConfig {
 		Password: "password",
 		Database: "note_app",
 	}
+}
+
+type DBConfig struct {
+	Driver   string
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
 }

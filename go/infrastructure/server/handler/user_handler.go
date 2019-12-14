@@ -34,18 +34,11 @@ func NewUserHandler(sh datastore.SQLHandler) *UserHandler {
 func (uh *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	userID := strings.TrimPrefix(r.URL.Path, "/users/")
 
-	// TODO: dbにアクセス
 	res, err := uh.UserController.UserByID(userID)
 	if err != nil {
 		response.InternalServerError(w, err.Error())
 		return
 	}
 
-	// TODO: responseの作成
 	response.Success(w, res)
-}
-
-// Hello sample handler
-func Hello(writer http.ResponseWriter, request *http.Request) {
-	writer.Write([]byte("heee"))
 }

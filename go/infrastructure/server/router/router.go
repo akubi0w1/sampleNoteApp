@@ -5,7 +5,7 @@ import (
 	"note-app/infrastructure/server/handler"
 )
 
-func SetUpRouting(s *server.Server, h *handler.UserHandler) {
-	// s.Get("/hello", handler.Hello)
-	s.Get("/users/", h.GetUserByID)
+// SetUpRouting ルーティング
+func SetUpRouting(s *server.Server, h *handler.AppHandler) {
+	s.Get("/users/", h.UserHandler.GetUserByID)
 }
