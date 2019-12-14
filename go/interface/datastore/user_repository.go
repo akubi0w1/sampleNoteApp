@@ -2,10 +2,28 @@ package datastore
 
 import (
 	"note-app/domain"
+	"time"
 )
 
 type UserRepository struct {
 	SQLHandler SQLHandler
+}
+
+func (ur *UserRepository) Store(id, name, password, mail string, createdAt time.Time) error {
+	_, err := ur.SQLHandler.Execute(
+		"INSERT INTO users(id, name, password, mail, created_at) VALUES (?,?,?,?,?)",
+		id,
+		name,
+		password,
+		mail,
+		createdAt,
+	)
+	return err
+}
+
+func (ur *UserRepository) Delete(userID string) error {
+	_, err := ur.SQLHandler.Execute("DELETE FROM users WHERE id=?", userID)
+	return err
 }
 
 func (ur *UserRepository) FindUsers() (users domain.Users, err error) {

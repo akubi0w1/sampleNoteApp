@@ -9,5 +9,6 @@ import (
 func SetUpRouting(s *server.Server, h *handler.AppHandler) {
 	s.Get("/users", h.UserHandler.GetUsers)
 	s.Get("/users/", h.UserHandler.GetUserByID)
-
+	s.Post("/account/create", h.UserHandler.CreateAccount)
+	s.Post("/account/delete/", h.UserHandler.Delete)
 }

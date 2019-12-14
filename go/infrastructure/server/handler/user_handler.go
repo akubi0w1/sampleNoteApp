@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -28,8 +30,41 @@ func NewUserHandler(sh datastore.SQLHandler) *UserHandler {
 	}
 }
 
-// TODO: define func: GetUsers
-func (uh *UserHandler) GetUsers(w http.ResponseWriter, t *http.Request) {
+func (uh *UserHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.BadRequest(w, err.Error())
+		return
+	}
+
+	var req controller.CreateAccountRequest
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		response.BadRequest(w, err.Error())
+		return
+	}
+
+	res, err := uh.UserController.Create(&req)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+	response.Success(w, res)
+}
+
+func (uh *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	// とりあえずpathで検出...
+	userID := strings.TrimPrefix(r.URL.Path, "/account/delete/")
+
+	res, err := uh.UserController.Delete(userID)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+	response.Success(w, res)
+}
+
+func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	res, err := uh.UserController.Users()
 	if err != nil {
 		response.InternalServerError(w, err.Error())
@@ -38,7 +73,6 @@ func (uh *UserHandler) GetUsers(w http.ResponseWriter, t *http.Request) {
 	response.Success(w, res)
 }
 
-// GetUserByID get user infomation by user id
 func (uh *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	userID := strings.TrimPrefix(r.URL.Path, "/users/")
 
