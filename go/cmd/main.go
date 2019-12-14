@@ -9,21 +9,21 @@ import (
 )
 
 func main() {
-	// TODO: load config
+	// load config
 	servConf := config.LoadServerConfig()
 
-	// TODO: connection db
+	// connection db
 	dbHandler := database.NewSQLHandler()
 
-	// TODO: create handler
+	// create handler
 	appHandler := handler.NewAppHandler(dbHandler)
 
-	// TODO: create new server
+	// create new server
 	serv := server.NewServer(servConf.Addr, servConf.Port)
 
-	// TODO: routing
+	// routing
 	router.SetUpRouting(serv, appHandler)
 
-	// TODO: start app
+	// start app
 	serv.Serve()
 }

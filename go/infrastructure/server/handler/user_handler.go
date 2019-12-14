@@ -29,6 +29,14 @@ func NewUserHandler(sh datastore.SQLHandler) *UserHandler {
 }
 
 // TODO: define func: GetUsers
+func (uh *UserHandler) GetUsers(w http.ResponseWriter, t *http.Request) {
+	res, err := uh.UserController.Users()
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+	response.Success(w, res)
+}
 
 // GetUserByID get user infomation by user id
 func (uh *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
