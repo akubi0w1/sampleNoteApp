@@ -6,7 +6,7 @@ import (
 
 // AppHandler アプリケーションハンドラ
 type AppHandler struct {
-	UserHandler *UserHandler
+	UserHandler UserHandler
 }
 
 // NewAppHandler アプリケーションハンドラの作成

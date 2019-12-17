@@ -6,11 +6,24 @@ import (
 	// "github.com/google/uuid"
 )
 
-type UserInteractor struct {
+type userInteractor struct {
 	UserRepository UserRepository
 }
 
-func (ui *UserInteractor) Add(id, name, password, mail string) (user domain.User, err error) {
+type UserInteractor interface {
+	Add(string, string, string, string) (domain.User, error)
+	Delete(string) error
+	ShowUsers() (domain.Users, error)
+	ShowUserByID(string) (domain.User, error)
+}
+
+func NewUserInteractor(ur UserRepository) UserInteractor {
+	return &userInteractor{
+		UserRepository: ur,
+	}
+}
+
+func (ui *userInteractor) Add(id, name, password, mail string) (user domain.User, err error) {
 	user.ID = id
 	user.Name = name
 	user.Mail = mail
@@ -22,14 +35,14 @@ func (ui *UserInteractor) Add(id, name, password, mail string) (user domain.User
 	return
 }
 
-func (ui *UserInteractor) Remove(userID string) error {
+func (ui *userInteractor) Delete(userID string) error {
 	return ui.UserRepository.Delete(userID)
 }
 
-func (ui *UserInteractor) ShowUsers() (domain.Users, error) {
+func (ui *userInteractor) ShowUsers() (domain.Users, error) {
 	return ui.UserRepository.FindUsers()
 }
 
-func (ui *UserInteractor) ShowUserByID(userID string) (domain.User, error) {
+func (ui *userInteractor) ShowUserByID(userID string) (domain.User, error) {
 	return ui.UserRepository.FindUserByID(userID)
 }

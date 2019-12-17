@@ -5,11 +5,24 @@ import (
 	"note-app/usecase"
 )
 
-type UserController struct {
+type userController struct {
 	UserInteractor usecase.UserInteractor
 }
 
-func (uc *UserController) Create(req *CreateAccountRequest) (*CreateAccountResponse, error) {
+type UserController interface {
+	Create(*CreateAccountRequest) (*CreateAccountResponse, error)
+	Delete(string) (*DeleteUserResponse, error)
+	Users() (*GetUsersResponse, error)
+	UserByID(string) (*GetUserResponse, error)
+}
+
+func NewUserController(ui usecase.UserInteractor) UserController {
+	return &userController{
+		UserInteractor: ui,
+	}
+}
+
+func (uc *userController) Create(req *CreateAccountRequest) (*CreateAccountResponse, error) {
 	user, err := uc.UserInteractor.Add(req.ID, req.Name, req.Password, req.Mail)
 	if err != nil {
 		return &CreateAccountResponse{}, err
@@ -39,8 +52,8 @@ type CreateAccountResponse struct {
 	CreatedAt string `json:"created_at"`
 }
 
-func (uc *UserController) Delete(userID string) (*DeleteUserResponse, error) {
-	err := uc.UserInteractor.Remove(userID)
+func (uc *userController) Delete(userID string) (*DeleteUserResponse, error) {
+	err := uc.UserInteractor.Delete(userID)
 	if err != nil {
 		return &DeleteUserResponse{}, err
 	}
@@ -53,7 +66,7 @@ type DeleteUserResponse struct {
 	Message string `json:"message"`
 }
 
-func (uc *UserController) Users() (*GetUsersResponse, error) {
+func (uc *userController) Users() (*GetUsersResponse, error) {
 	users, err := uc.UserInteractor.ShowUsers()
 	if err != nil {
 		return &GetUsersResponse{}, err
@@ -74,7 +87,7 @@ type GetUsersResponse struct {
 	Users []GetUserResponse `json:"users"`
 }
 
-func (uc *UserController) UserByID(userID string) (*GetUserResponse, error) {
+func (uc *userController) UserByID(userID string) (*GetUserResponse, error) {
 	user, err := uc.UserInteractor.ShowUserByID(userID)
 	if err != nil {
 		return &GetUserResponse{}, err

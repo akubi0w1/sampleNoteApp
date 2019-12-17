@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: 'note App'
-  description: 'sample note app that go + react?'
+  description: 'sample note app that go + react? 認証はjwtをcookieに突っ込む。cookieの制約はsecureとhttpOnly'
 
 tags:
   - name: 'account'
@@ -30,10 +30,10 @@ paths:
                 $ref: '#/components/schemas/Account'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
-      
-  /account/create:
     post:
       summary: 'create new account'
       description: 'create account. password hash. gen x-token.'
@@ -58,12 +58,17 @@ paths:
           $ref: '#/components/responses/InternalServerError'
                 
     
-  /account/update:
-    post:
+  /account/{id}:
+    put:
       summary: 'update account infomation'
       tags: 
         - 'account'
       parameters: 
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
         - $ref: '#/components/parameters/AuthToken'
       requestBody:
         description: 'infomation account'
@@ -80,15 +85,20 @@ paths:
                 $ref: '#/components/schemas/Account'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
-                
-  /account/delete:
-    post:
+    delete:
       summary: 'delete account'
       tags: 
         - 'account'
       parameters: 
+        - name: 'id'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
         - $ref: '#/components/parameters/AuthToken'
       responses:
         '200':
@@ -103,6 +113,8 @@ paths:
                     example: 'success'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
                 
@@ -173,6 +185,34 @@ paths:
                       $ref: '#/components/schemas/Note'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: 'create new note'
+      description: 'create new note'
+      tags: 
+        - 'notes'
+      parameters: 
+        - $ref: '#/components/parameters/AuthToken'
+      requestBody:
+        description: 'infomation note'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNoteRequest'
+      responses:
+        '200':
+          description: 'return note info'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
         
@@ -198,37 +238,11 @@ paths:
                 $ref: '#/components/schemas/Note'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    
-  /notes/create:
-    post:
-      summary: 'create new note'
-      description: 'create new note'
-      tags: 
-        - 'notes'
-      parameters: 
-        - $ref: '#/components/parameters/AuthToken'
-      requestBody:
-        description: 'infomation note'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateNoteRequest'
-      responses:
-        '200':
-          description: 'return note info'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /notes/{id}/update:
-    post:
+    put:
       summary: 'update note'
       description: 'update note'
       tags: 
@@ -256,11 +270,11 @@ paths:
                 $ref: '#/components/schemas/Note'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    
-  /notes/{id}/delete:
-    post:
+    delete:
       summary: 'delete note'
       description: 'delete note'
       tags: 
@@ -286,9 +300,10 @@ paths:
                     example: 'success'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  
   
 components:
   schemas:
@@ -300,7 +315,7 @@ components:
         name:
           type: 'string'
           description: 'user_name'
-        email:
+        mail:
           type: 'string'
           description: 'mail address'
         created_at:
@@ -351,7 +366,7 @@ components:
     AuthToken:
       name: 'x-token'
       description: 'access token'
-      in: 'header'
+      in: 'cookie'
       required: true
       schema:
         type: 'string'
@@ -365,6 +380,16 @@ components:
               - $ref: '#/components/schemas/ErrorResponse'
             example: 
               code: 400
+              message: 'error content'
+    Unauthorized:
+      description: 'unauthorized error'
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorResponse'
+            example:
+              code: 401
               message: 'error content'
     InternalServerError:
       description: 'internal server error'
