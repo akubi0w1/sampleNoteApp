@@ -11,6 +11,7 @@ type noteController struct {
 type NoteController interface {
 	ShowNoteByNoteID(noteID string) (*GetNoteResponse, error)
 	ShowNotes(userID string) (*GetNotesResopnse, error)
+	CreateNote(userID string, req CreateNoteRequest) (*CreateNoteResponse, error)
 }
 
 func NewNoteController(ni usecase.NoteInteractor) NoteController {
@@ -72,4 +73,36 @@ func (nc *noteController) ShowNotes(userID string) (*GetNotesResopnse, error) {
 
 type GetNotesResopnse struct {
 	Notes []GetNoteResponse `json:"notes"`
+}
+
+func (nc *noteController) CreateNote(userID string, req CreateNoteRequest) (*CreateNoteResponse, error) {
+	var res CreateNoteResponse
+	note, err := nc.NoteInteractor.AddNote(req.Title, req.Content, userID)
+	if err != nil {
+		return &res, err
+	}
+	res.ID = note.ID
+	res.Title = note.Title
+	res.Content = note.Content
+	res.CreatedAt = note.CreatedAt
+	res.UpdatedAt = note.UpdatedAt
+	res.Author.ID = note.Author.ID
+	res.Author.Name = note.Author.Name
+	res.Author.Mail = note.Author.Mail
+	res.Author.CreatedAt = note.Author.CreatedAt
+	return &res, err
+}
+
+type CreateNoteRequest struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+type CreateNoteResponse struct {
+	ID        string          `json:"id"`
+	Title     string          `json:"title"`
+	Content   string          `json:"content"`
+	CreatedAt string          `json:"created_at"`
+	UpdatedAt string          `json:"updated_at"`
+	Author    GetUserResponse `json:"author"`
 }

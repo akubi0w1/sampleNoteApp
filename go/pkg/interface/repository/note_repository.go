@@ -3,6 +3,7 @@ package repository
 import (
 	"app/pkg/domain"
 	"app/pkg/usecase"
+	"time"
 )
 
 type noteRepository struct {
@@ -36,4 +37,17 @@ func (nr *noteRepository) FindNotes(userID string) (notes domain.Notes, err erro
 		notes = append(notes, note)
 	}
 	return
+}
+
+func (nr *noteRepository) StoreNote(id, title, content, userID string, created_at time.Time) error {
+	_, err := nr.DB.Execute(
+		"INSERT INTO notes(id, title, content, created_at, updated_at, user_id) VALUES (?,?,?,?,?,?)",
+		id,
+		title,
+		content,
+		created_at,
+		created_at,
+		userID,
+	)
+	return err
 }

@@ -80,6 +80,8 @@ func (ah *appHandler) ManageNotes() http.HandlerFunc {
 		switch r.Method {
 		case http.MethodGet:
 			middleware.Authorized(ah.NoteHandler.GetNotes).ServeHTTP(w, r)
+		case http.MethodPost:
+			middleware.Authorized(ah.NoteHandler.CreateNote).ServeHTTP(w, r)
 		default:
 			response.BadRequest(w, "method not allowed")
 		}

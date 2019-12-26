@@ -21,4 +21,5 @@ type UserRepository interface {
 type NoteRepository interface {
 	FindNoteByNoteID(noteID string) (domain.Note, error)
 	FindNotes(userID string) (domain.Notes, error)
+	StoreNote(id, title, content, userID string, createdAt time.Time) error
 }

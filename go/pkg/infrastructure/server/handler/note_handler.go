@@ -6,6 +6,8 @@ import (
 	"app/pkg/interface/controller"
 	"app/pkg/interface/repository"
 	"app/pkg/usecase"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -17,6 +19,7 @@ type noteHandler struct {
 type NoteHandler interface {
 	GetNoteByNoteID(w http.ResponseWriter, r *http.Request)
 	GetNotes(w http.ResponseWriter, r *http.Request)
+	CreateNote(w http.ResponseWriter, r *http.Request)
 }
 
 func NewNoteHandler(sh repository.SQLHandler) NoteHandler {
@@ -46,6 +49,30 @@ func (nh *noteHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
 	userID := dcontext.GetUserIDFromContext(ctx)
 
 	res, err := nh.NoteController.ShowNotes(userID)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+	response.Success(w, res)
+}
+
+func (nh *noteHandler) CreateNote(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userID := dcontext.GetUserIDFromContext(ctx)
+
+	var req controller.CreateNoteRequest
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.BadRequest(w, err.Error())
+		return
+	}
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+
+	res, err := nh.NoteController.CreateNote(userID, req)
 	if err != nil {
 		response.InternalServerError(w, err.Error())
 		return
