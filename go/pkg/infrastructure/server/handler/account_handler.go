@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"app/pkg/infrastructure/auth"
@@ -19,7 +18,10 @@ type accountHandler struct {
 }
 
 type AccountHandler interface {
-	AccountHandler(http.ResponseWriter, *http.Request)
+	GetAccount(http.ResponseWriter, *http.Request)
+	CreateAccount(w http.ResponseWriter, r *http.Request)
+	UpdateAccount(w http.ResponseWriter, r *http.Request)
+	DeleteAccount(w http.ResponseWriter, r *http.Request)
 	Login(http.ResponseWriter, *http.Request)
 	// LogoutHandler(http.ResponseWriter, *http.Request)
 }
@@ -34,27 +36,86 @@ func NewAccountHandler(sh repository.SQLHandler) AccountHandler {
 	}
 }
 
-func (ah *accountHandler) AccountHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		log.Println("get")
-		// 認証が終わった後の処理
-		// contextからuserIDの取り出し
-		ctx := r.Context()
-		userID := dcontext.GetUserIDFromContext(ctx)
-		if userID == "" {
-			response.BadRequest(w, "userID is empty")
-			return
-		}
-
-		res, err := ah.AccountController.ShowAccount(userID)
-		if err != nil {
-			response.InternalServerError(w, err.Error())
-			return
-		}
-		// レスポンスを作成
-		response.Success(w, res)
-
+func (ah *accountHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
+	// contextからuserIDの取り出し
+	ctx := r.Context()
+	userID := dcontext.GetUserIDFromContext(ctx)
+	if userID == "" {
+		response.BadRequest(w, "userID is empty")
+		return
 	}
+
+	res, err := ah.AccountController.ShowAccount(userID)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+	// レスポンスを作成
+	response.Success(w, res)
+}
+
+func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) {
+	// bodyの読み出し
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.BadRequest(w, err.Error())
+		return
+	}
+	var req controller.CreateAccountRequest
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+
+	// controllerを叩く
+	res, err := ah.AccountController.Add(req.ID, req.Name, req.Password, req.Mail)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+
+	// response
+	response.Success(w, res)
+}
+
+func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) {
+	// ctxからuserIDの取得
+	ctx := r.Context()
+	userID := dcontext.GetUserIDFromContext(ctx)
+
+	// bodyの読み出し
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.BadRequest(w, err.Error())
+		return
+	}
+	var req controller.CreateAccountRequest
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+
+	res, err := ah.AccountController.UpdateAccount(userID, req)
+	if err != nil {
+		response.BadRequest(w, err.Error())
+		return
+	}
+
+	response.Success(w, res)
+}
+
+func (ah *accountHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userID := dcontext.GetUserIDFromContext(ctx)
+
+	err := ah.AccountController.DeleteAccount(userID)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+	response.NoContent(w)
 }
 
 func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -71,8 +132,7 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: bodyのバリデーションチェック?
-
+	// TODO: usecaseに持っていく
 	// userの取得
 	res, err := ah.AccountController.AuthAccount(req.UserID)
 
@@ -97,6 +157,8 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, &cookie)
 
-	// TODO: response
+	// TODO: resを受け取る
+
+	// response
 	response.Success(w, res)
 }
