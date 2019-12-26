@@ -23,4 +23,5 @@ type NoteRepository interface {
 	FindNotes(userID string) (domain.Notes, error)
 	StoreNote(id, title, content, userID string, createdAt time.Time) error
 	UpdateNote(id, title, content string, updatedAt time.Time) error
+	DeleteNote(noteID string) error
 }

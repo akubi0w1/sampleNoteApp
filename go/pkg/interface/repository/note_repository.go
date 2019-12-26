@@ -64,3 +64,8 @@ func (nr *noteRepository) UpdateNote(id, title, content string, updatedAt time.T
 	_, err := nr.DB.Execute(query, values...)
 	return err
 }
+
+func (nr *noteRepository) DeleteNote(noteID string) error {
+	_, err := nr.DB.Execute("DELETE FROM notes WHERE id=?", noteID)
+	return err
+}

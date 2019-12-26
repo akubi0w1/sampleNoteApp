@@ -12,10 +12,11 @@ type noteInteractor struct {
 }
 
 type NoteInteractor interface {
-	NoteByNoteID(noteID string) (domain.Note, error)
+	NoteByNoteID(userID, noteID string) (domain.Note, error)
 	Notes(userID string) (domain.Notes, error)
 	AddNote(title, content, userID string) (note domain.Note, err error)
 	UpdateNote(userID, id, title, content string) (note domain.Note, err error)
+	DeleteNote(userID, noteID string) error
 }
 
 func NewNoteInteractor(nr NoteRepository) NoteInteractor {
@@ -24,8 +25,12 @@ func NewNoteInteractor(nr NoteRepository) NoteInteractor {
 	}
 }
 
-func (ni *noteInteractor) NoteByNoteID(noteID string) (domain.Note, error) {
-	return ni.NoteRepository.FindNoteByNoteID(noteID)
+func (ni *noteInteractor) NoteByNoteID(userID, noteID string) (note domain.Note, err error) {
+	note, err = ni.NoteRepository.FindNoteByNoteID(noteID)
+	if note.Author.ID != userID {
+		return note, errors.New("auth error")
+	}
+	return
 }
 
 func (ni *noteInteractor) Notes(userID string) (domain.Notes, error) {
@@ -64,4 +69,16 @@ func (ni *noteInteractor) UpdateNote(userID, id, title, content string) (note do
 	note.Content = content
 	note.UpdatedAt = updatedAt.String()
 	return
+}
+
+func (ni *noteInteractor) DeleteNote(userID, noteID string) error {
+	note, err := ni.NoteRepository.FindNoteByNoteID(noteID)
+	if err != nil {
+		return err
+	}
+	if note.Author.ID != userID {
+		return errors.New("auth error")
+	}
+	err = ni.NoteRepository.DeleteNote(noteID)
+	return err
 }

@@ -10,10 +10,11 @@ type noteController struct {
 }
 
 type NoteController interface {
-	ShowNoteByNoteID(noteID string) (*GetNoteResponse, error)
+	ShowNoteByNoteID(userID, noteID string) (*GetNoteResponse, error)
 	ShowNotes(userID string) (*GetNotesResopnse, error)
 	CreateNote(userID string, req CreateNoteRequest) (*CreateNoteResponse, error)
 	UpdateNote(userID, noteID string, req UpdateNoteRequest) (*UpdateNoteResponse, error)
+	DeleteNote(userID, noteID string) error
 }
 
 func NewNoteController(ni usecase.NoteInteractor) NoteController {
@@ -22,9 +23,9 @@ func NewNoteController(ni usecase.NoteInteractor) NoteController {
 	}
 }
 
-func (nc *noteController) ShowNoteByNoteID(noteID string) (*GetNoteResponse, error) {
+func (nc *noteController) ShowNoteByNoteID(userID, noteID string) (*GetNoteResponse, error) {
 	var res GetNoteResponse
-	note, err := nc.NoteInteractor.NoteByNoteID(noteID)
+	note, err := nc.NoteInteractor.NoteByNoteID(userID, noteID)
 	if err != nil {
 		return &res, err
 	}
@@ -148,4 +149,8 @@ type UpdateNoteResponse struct {
 	CreatedAt string          `json:"created_at"`
 	UpdatedAt string          `json:"updated_at"`
 	Author    GetUserResponse `json:"author"`
+}
+
+func (nc *noteController) DeleteNote(userID, noteID string) error {
+	return nc.NoteInteractor.DeleteNote(userID, noteID)
 }

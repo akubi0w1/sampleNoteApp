@@ -21,6 +21,7 @@ type NoteHandler interface {
 	GetNotes(w http.ResponseWriter, r *http.Request)
 	CreateNote(w http.ResponseWriter, r *http.Request)
 	UpdateNote(w http.ResponseWriter, r *http.Request)
+	DeleteNote(w http.ResponseWriter, r *http.Request)
 }
 
 func NewNoteHandler(sh repository.SQLHandler) NoteHandler {
@@ -34,9 +35,12 @@ func NewNoteHandler(sh repository.SQLHandler) NoteHandler {
 }
 
 func (nh *noteHandler) GetNoteByNoteID(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userID := dcontext.GetUserIDFromContext(ctx)
+
 	noteID := strings.TrimPrefix(r.URL.Path, "/notes/")
 
-	res, err := nh.NoteController.ShowNoteByNoteID(noteID)
+	res, err := nh.NoteController.ShowNoteByNoteID(userID, noteID)
 	if err != nil {
 		response.InternalServerError(w, err.Error())
 		return
@@ -105,4 +109,18 @@ func (nh *noteHandler) UpdateNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.Success(w, res)
+}
+
+func (nh *noteHandler) DeleteNote(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userID := dcontext.GetUserIDFromContext(ctx)
+
+	noteID := strings.TrimPrefix(r.URL.Path, "/notes/")
+
+	err := nh.NoteController.DeleteNote(userID, noteID)
+	if err != nil {
+		response.InternalServerError(w, err.Error())
+		return
+	}
+	response.NoContent(w)
 }
