@@ -69,6 +69,8 @@ func (ah *appHandler) ManageANote() http.HandlerFunc {
 		switch r.Method {
 		case http.MethodGet:
 			ah.NoteHandler.GetNoteByNoteID(w, r)
+		case http.MethodPut:
+			middleware.Authorized(ah.NoteHandler.UpdateNote).ServeHTTP(w, r)
 		default:
 			response.BadRequest(w, "method not allowed")
 		}

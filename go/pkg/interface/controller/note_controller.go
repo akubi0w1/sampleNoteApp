@@ -2,6 +2,7 @@ package controller
 
 import (
 	"app/pkg/usecase"
+	"errors"
 )
 
 type noteController struct {
@@ -12,6 +13,7 @@ type NoteController interface {
 	ShowNoteByNoteID(noteID string) (*GetNoteResponse, error)
 	ShowNotes(userID string) (*GetNotesResopnse, error)
 	CreateNote(userID string, req CreateNoteRequest) (*CreateNoteResponse, error)
+	UpdateNote(userID, noteID string, req UpdateNoteRequest) (*UpdateNoteResponse, error)
 }
 
 func NewNoteController(ni usecase.NoteInteractor) NoteController {
@@ -77,6 +79,12 @@ type GetNotesResopnse struct {
 
 func (nc *noteController) CreateNote(userID string, req CreateNoteRequest) (*CreateNoteResponse, error) {
 	var res CreateNoteResponse
+	if req.Title == "" {
+		return &res, errors.New("title is empty")
+	}
+	if req.Content == "" {
+		return &res, errors.New("content is empty")
+	}
 	note, err := nc.NoteInteractor.AddNote(req.Title, req.Content, userID)
 	if err != nil {
 		return &res, err
@@ -99,6 +107,41 @@ type CreateNoteRequest struct {
 }
 
 type CreateNoteResponse struct {
+	ID        string          `json:"id"`
+	Title     string          `json:"title"`
+	Content   string          `json:"content"`
+	CreatedAt string          `json:"created_at"`
+	UpdatedAt string          `json:"updated_at"`
+	Author    GetUserResponse `json:"author"`
+}
+
+func (nc *noteController) UpdateNote(userID, noteID string, req UpdateNoteRequest) (*UpdateNoteResponse, error) {
+	var res UpdateNoteResponse
+	if req.Title == "" {
+		return &res, errors.New("title is empty")
+	}
+	note, err := nc.NoteInteractor.UpdateNote(userID, noteID, req.Title, req.Content)
+	if err != nil {
+		return &res, err
+	}
+	res.ID = note.ID
+	res.Title = note.Title
+	res.Content = note.Content
+	res.CreatedAt = note.CreatedAt
+	res.UpdatedAt = note.UpdatedAt
+	res.Author.ID = note.Author.ID
+	res.Author.Name = note.Author.Name
+	res.Author.Mail = note.Author.Mail
+	res.Author.CreatedAt = note.Author.CreatedAt
+	return &res, err
+}
+
+type UpdateNoteRequest struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+type UpdateNoteResponse struct {
 	ID        string          `json:"id"`
 	Title     string          `json:"title"`
 	Content   string          `json:"content"`

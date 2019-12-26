@@ -51,3 +51,16 @@ func (nr *noteRepository) StoreNote(id, title, content, userID string, created_a
 	)
 	return err
 }
+
+func (nr *noteRepository) UpdateNote(id, title, content string, updatedAt time.Time) error {
+	query := "UPDATE notes SET"
+	var values []interface{}
+	if title != "" {
+		query += " title=?,"
+		values = append(values, title)
+	}
+	query += " content=?, updated_at=? WHERE id=?"
+	values = append(values, content, updatedAt, id)
+	_, err := nr.DB.Execute(query, values...)
+	return err
+}
