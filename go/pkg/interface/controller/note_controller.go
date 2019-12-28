@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"app/pkg/domain"
 	"app/pkg/usecase"
 	"errors"
 )
@@ -81,10 +82,10 @@ type GetNotesResopnse struct {
 func (nc *noteController) CreateNote(userID string, req CreateNoteRequest) (*CreateNoteResponse, error) {
 	var res CreateNoteResponse
 	if req.Title == "" {
-		return &res, errors.New("title is empty")
+		return &res, domain.BadRequest(errors.New("title is empty"))
 	}
 	if req.Content == "" {
-		return &res, errors.New("content is empty")
+		return &res, domain.BadRequest(errors.New("content is empty"))
 	}
 	note, err := nc.NoteInteractor.AddNote(req.Title, req.Content, userID)
 	if err != nil {
@@ -99,7 +100,7 @@ func (nc *noteController) CreateNote(userID string, req CreateNoteRequest) (*Cre
 	res.Author.Name = note.Author.Name
 	res.Author.Mail = note.Author.Mail
 	res.Author.CreatedAt = note.Author.CreatedAt
-	return &res, err
+	return &res, nil
 }
 
 type CreateNoteRequest struct {
@@ -119,7 +120,7 @@ type CreateNoteResponse struct {
 func (nc *noteController) UpdateNote(userID, noteID string, req UpdateNoteRequest) (*UpdateNoteResponse, error) {
 	var res UpdateNoteResponse
 	if req.Title == "" {
-		return &res, errors.New("title is empty")
+		return &res, domain.BadRequest(errors.New("title is empty"))
 	}
 	note, err := nc.NoteInteractor.UpdateNote(userID, noteID, req.Title, req.Content)
 	if err != nil {
@@ -134,7 +135,7 @@ func (nc *noteController) UpdateNote(userID, noteID string, req UpdateNoteReques
 	res.Author.Name = note.Author.Name
 	res.Author.Mail = note.Author.Mail
 	res.Author.CreatedAt = note.Author.CreatedAt
-	return &res, err
+	return &res, nil
 }
 
 type UpdateNoteRequest struct {

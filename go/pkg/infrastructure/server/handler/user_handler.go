@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"app/pkg/domain"
 	"app/pkg/infrastructure/server/response"
 	"app/pkg/interface/controller"
 	"app/pkg/interface/repository"
 	"app/pkg/usecase"
+	"errors"
 	"net/http"
 	"strings"
 )
@@ -31,13 +33,13 @@ func NewUserHandler(sh repository.SQLHandler) UserHandler {
 func (uh *userHandler) GetUserByUserID(w http.ResponseWriter, r *http.Request) {
 	userID := strings.TrimPrefix(r.URL.Path, "/users/")
 	if userID == "" {
-		response.BadRequest(w, "userID is empty")
+		response.HttpError(w, domain.BadRequest(errors.New("userID is empty")))
 		return
 	}
 
 	res, err := uh.UserController.ShowUserByUserID(userID)
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, err)
 		return
 	}
 
@@ -47,7 +49,7 @@ func (uh *userHandler) GetUserByUserID(w http.ResponseWriter, r *http.Request) {
 func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	res, err := uh.UserController.ShowUsers()
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, err)
 		return
 	}
 	response.Success(w, res)

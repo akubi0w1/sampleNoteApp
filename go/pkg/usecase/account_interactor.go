@@ -33,7 +33,7 @@ func (ai *accountInteractor) CreateAccount(userID, name, password, mail string) 
 	// TODO: 依存取って
 	hash, err := auth.PasswordHash(password)
 	if err != nil {
-		return
+		return user, domain.InternalServerError(err)
 	}
 
 	// timeの取得
@@ -58,7 +58,7 @@ func (ai *accountInteractor) UpdateAccount(userID, newUserID, name, password, ma
 	if password != "" {
 		hash, err = auth.PasswordHash(password)
 		if err != nil {
-			return user, err
+			return user, domain.InternalServerError(err)
 		}
 	}
 
@@ -66,6 +66,7 @@ func (ai *accountInteractor) UpdateAccount(userID, newUserID, name, password, ma
 	if err != nil {
 		return user, err
 	}
+
 	user.ID = userID
 	if newUserID != "" {
 		user.ID = newUserID

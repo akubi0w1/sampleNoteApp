@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"app/pkg/domain"
 	"app/pkg/usecase"
 	"errors"
 )
@@ -46,16 +47,16 @@ type getAccountResponse struct {
 func (ac *accountController) Add(userID, name, password, mail string) (*createAccountResponse, error) {
 	var res createAccountResponse
 	if userID == "" {
-		return &res, errors.New("userID is empty")
+		return &res, domain.BadRequest(errors.New("userID is empty"))
 	}
 	if name == "" {
-		return &res, errors.New("name is empty")
+		return &res, domain.BadRequest(errors.New("name is empty"))
 	}
 	if password == "" {
-		return &res, errors.New("password is empty")
+		return &res, domain.BadRequest(errors.New("password is empty"))
 	}
 	if mail == "" {
-		return &res, errors.New("mail is empty")
+		return &res, domain.BadRequest(errors.New("mail is empty"))
 	}
 
 	user, err := ac.AccountInteractor.CreateAccount(userID, name, password, mail)

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"app/pkg/domain"
 	"app/pkg/infrastructure/dcontext"
 	"app/pkg/infrastructure/server/response"
 	"app/pkg/interface/controller"
@@ -42,7 +43,7 @@ func (nh *noteHandler) GetNoteByNoteID(w http.ResponseWriter, r *http.Request) {
 
 	res, err := nh.NoteController.ShowNoteByNoteID(userID, noteID)
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, err)
 		return
 	}
 
@@ -55,7 +56,7 @@ func (nh *noteHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
 
 	res, err := nh.NoteController.ShowNotes(userID)
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, err)
 		return
 	}
 	response.Success(w, res)
@@ -68,18 +69,18 @@ func (nh *noteHandler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	var req controller.CreateNoteRequest
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		response.BadRequest(w, err.Error())
+		response.HttpError(w, domain.BadRequest(err))
 		return
 	}
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, domain.InternalServerError(err))
 		return
 	}
 
 	res, err := nh.NoteController.CreateNote(userID, req)
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, err)
 		return
 	}
 	response.Success(w, res)
@@ -94,18 +95,18 @@ func (nh *noteHandler) UpdateNote(w http.ResponseWriter, r *http.Request) {
 	var req controller.UpdateNoteRequest
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		response.BadRequest(w, err.Error())
+		response.HttpError(w, domain.BadRequest(err))
 		return
 	}
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, domain.InternalServerError(err))
 		return
 	}
 
 	res, err := nh.NoteController.UpdateNote(userID, noteID, req)
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, err)
 		return
 	}
 	response.Success(w, res)
@@ -119,7 +120,7 @@ func (nh *noteHandler) DeleteNote(w http.ResponseWriter, r *http.Request) {
 
 	err := nh.NoteController.DeleteNote(userID, noteID)
 	if err != nil {
-		response.InternalServerError(w, err.Error())
+		response.HttpError(w, err)
 		return
 	}
 	response.NoContent(w)

@@ -27,8 +27,11 @@ func NewNoteInteractor(nr NoteRepository) NoteInteractor {
 
 func (ni *noteInteractor) NoteByNoteID(userID, noteID string) (note domain.Note, err error) {
 	note, err = ni.NoteRepository.FindNoteByNoteID(noteID)
+	if err != nil {
+		return
+	}
 	if note.Author.ID != userID {
-		return note, errors.New("auth error")
+		return note, domain.Unauthorized(errors.New("Unauthorized"))
 	}
 	return
 }
@@ -38,14 +41,12 @@ func (ni *noteInteractor) Notes(userID string) (domain.Notes, error) {
 }
 
 func (ni *noteInteractor) AddNote(title, content, userID string) (note domain.Note, err error) {
-	// gen note id
 	id, err := uuid.NewRandom()
 	if err != nil {
-		return
+		return note, domain.InternalServerError(err)
 	}
-	// get time
 	createdAt := time.Now()
-	// store db
+
 	err = ni.NoteRepository.StoreNote(id.String(), title, content, userID, createdAt)
 	if err != nil {
 		return
@@ -54,11 +55,10 @@ func (ni *noteInteractor) AddNote(title, content, userID string) (note domain.No
 }
 
 func (ni *noteInteractor) UpdateNote(userID, id, title, content string) (note domain.Note, err error) {
-	// get time
 	updatedAt := time.Now()
 	note, err = ni.NoteRepository.FindNoteByNoteID(id)
 	if note.Author.ID != userID {
-		return note, errors.New("auth error")
+		return note, domain.Unauthorized(errors.New("Unauthorized"))
 	}
 
 	err = ni.NoteRepository.UpdateNote(id, title, content, updatedAt)
@@ -77,8 +77,7 @@ func (ni *noteInteractor) DeleteNote(userID, noteID string) error {
 		return err
 	}
 	if note.Author.ID != userID {
-		return errors.New("auth error")
+		return domain.Unauthorized(errors.New("Unauthorized"))
 	}
-	err = ni.NoteRepository.DeleteNote(noteID)
-	return err
+	return ni.NoteRepository.DeleteNote(noteID)
 }

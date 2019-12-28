@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"app/pkg/domain"
 	"app/pkg/infrastructure/auth"
 	"app/pkg/infrastructure/dcontext"
 	"app/pkg/infrastructure/server/response"
@@ -20,14 +21,14 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// cookieからtokenを取得
 		cookie, err := r.Cookie("x-token")
 		if err != nil {
-			response.BadRequest(w, err.Error())
+			response.HttpError(w, domain.Unauthorized(err))
 			return
 		}
 
 		// tokenの検証
 		token, err := auth.VerifyToken(cookie.Value)
 		if err != nil {
-			response.BadRequest(w, err.Error())
+			response.HttpError(w, domain.Unauthorized(err))
 			return
 		}
 

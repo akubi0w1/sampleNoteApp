@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"app/pkg/domain"
 	"app/pkg/infrastructure/server/middleware"
 	"app/pkg/infrastructure/server/response"
 	"app/pkg/interface/repository"
+	"errors"
 	"net/http"
 )
 
@@ -47,21 +49,42 @@ func (ah *appHandler) ManageAccount() http.HandlerFunc {
 		case http.MethodDelete:
 			middleware.Authorized(ah.AccountHandler.DeleteAccount).ServeHTTP(w, r)
 		default:
-			response.BadRequest(w, "method not allowed")
+			response.HttpError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
 		}
 	}
 }
 
 func (ah *appHandler) Login() http.HandlerFunc {
-	return ah.AccountHandler.Login
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodPost:
+			ah.AccountHandler.Login(w, r)
+		default:
+			response.HttpError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
 }
 
 func (ah *appHandler) GetUserByUserID() http.HandlerFunc {
-	return ah.UserHandler.GetUserByUserID
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.UserHandler.GetUserByUserID(w, r)
+		default:
+			response.HttpError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
 }
 
 func (ah *appHandler) GetUsers() http.HandlerFunc {
-	return ah.UserHandler.GetUsers
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			ah.UserHandler.GetUsers(w, r)
+		default:
+			response.HttpError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
+		}
+	}
 }
 
 func (ah *appHandler) ManageANote() http.HandlerFunc {
@@ -74,7 +97,7 @@ func (ah *appHandler) ManageANote() http.HandlerFunc {
 		case http.MethodDelete:
 			middleware.Authorized(ah.NoteHandler.DeleteNote).ServeHTTP(w, r)
 		default:
-			response.BadRequest(w, "method not allowed")
+			response.HttpError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
 		}
 	}
 }
@@ -87,7 +110,7 @@ func (ah *appHandler) ManageNotes() http.HandlerFunc {
 		case http.MethodPost:
 			middleware.Authorized(ah.NoteHandler.CreateNote).ServeHTTP(w, r)
 		default:
-			response.BadRequest(w, "method not allowed")
+			response.HttpError(w, domain.MethodNotAllowed(errors.New("method not allowed")))
 		}
 	}
 }
