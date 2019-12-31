@@ -28,6 +28,7 @@ func HttpError(w http.ResponseWriter, err error) {
 		Code:    e.GetStatusCode(),
 		Message: e.Error(),
 	})
+	w.WriteHeader(e.GetStatusCode())
 	w.Write(jsonData)
 }
 

@@ -17,7 +17,6 @@ func Authorized(nextFunc http.HandlerFunc) http.HandlerFunc {
 		if ctx == nil {
 			ctx = context.Background()
 		}
-
 		// cookieからtokenを取得
 		cookie, err := r.Cookie("x-token")
 		if err != nil {

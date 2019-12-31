@@ -154,8 +154,10 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	// クッキーに乗っける
 	cookie := http.Cookie{
-		Name:  "x-token",
-		Value: token,
+		Name:   "x-token",
+		Value:  token,
+		Domain: "localhost",
+		Path:   "/",
 	}
 	http.SetCookie(w, &cookie)
 
