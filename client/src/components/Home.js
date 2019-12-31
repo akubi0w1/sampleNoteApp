@@ -7,7 +7,6 @@ class Home extends React.Component{
     }
 
     componentDidMount(){
-        console.log("did maou")
         this.props.fetchData()
     }
 
@@ -26,14 +25,23 @@ class Home extends React.Component{
 function NoteList(props) {
     return (
         <div>
-            <h1>NoteList</h1>
+            <div>
+                <h1 className="h1">NoteList</h1>
+                <Link to='/notes/new'><button className="btn btn-primary ml-10">new</button></Link>
+            </div>
             {
                 props.isFetching
                     ? <p>Now Loading...</p>
-                    : props.notes.map(note => (
-                        <NoteRow key={note.id} note={note}/>
-                    ))
-                }
+                    : <div>
+                        {
+                            !props.notes
+                            ? <p>No note</p>
+                            : props.notes.map(note => (
+                                <NoteRow key={note.id} note={note} />
+                            ))
+                        }
+                    </div>
+            }
         </div>
     )
 

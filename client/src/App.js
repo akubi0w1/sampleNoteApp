@@ -8,6 +8,7 @@ import Account from './components/Account'
 import Login from './components/Authorized'
 import Home from './components/Home'
 import NoteDefail from './components/Detail'
+import NoteEdit from './components/Edit'
 
 const BASE_URL = 'http://localhost:8080'
 
@@ -28,6 +29,8 @@ class App extends React.Component {
         this.requestLogin = this.requestLogin.bind(this)
         this.fetchNotesData = this.fetchNotesData.bind(this)
         this.fetchNoteData = this.fetchNoteData.bind(this)
+        this.updateNote = this.updateNote.bind(this)
+        this.deleteNote = this.deleteNote.bind(this)
     }
 
     fetchAccountData(){
@@ -99,20 +102,66 @@ class App extends React.Component {
         axios.get(BASE_URL + '/notes/' + id, {
             withCredentials: true,
         })
+        .then(res => {
+            console.log(res)
+
+            const _note = res.data
+            this.setState({
+                note: _note
+            })
+            this.setState({
+                isFetching: false,
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
+    updateNote(id, title, content) {
+        if(id){
+            axios.put(BASE_URL + '/notes/' + id, {
+                title: title,
+                content: content,
+            }, {
+                withCredentials: true,
+            })
             .then(res => {
                 console.log(res)
-                this.setState({
-                    isFetching: false,
-                })
-
-                const _note = res.data
-                this.setState({
-                    note: _note
-                })
             })
             .catch(err => {
                 console.log(err)
             })
+        } else {
+            axios.post(BASE_URL + '/notes', {
+                title: title,
+                content: content,
+            }, {
+                withCredentials: true,
+            })
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+        this.setState({
+            note: {}
+        }) 
+    }
+
+    deleteNote(id){
+        axios.delete( BASE_URL + '/notes/' + id, {
+            withCredentials: true,
+        })
+        .then(res => {
+            console.log(res)
+            window.location = '/'
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }
 
     requestLogin(userID, password){
@@ -160,12 +209,39 @@ class App extends React.Component {
                         render={props => 
                             <NoteDefail
                                 fetchData={this.fetchNoteData}
+                                deleteData={this.deleteNote}
                                 note={this.state.note}
                                 isFetching={this.state.isFetching}
                                 {...props}
                             />
                         }
                     />
+                    <Route
+                        exact
+                        path='/notes/item/:id/edit'
+                        render={props =>
+                            <NoteEdit
+                                fetchData={this.fetchNoteData}
+                                note={this.state.note}
+                                isFetching={this.state.isFetching}
+                                handleSubmit={this.updateNote}
+                                {...props}
+                            />
+                        }
+                    />
+                    <Route
+                        exact
+                        path='/notes/new'
+                        render={ props =>
+                            <NoteEdit
+                                fetchData={this.fetchNoteData}
+                                note={this.state.note}
+                                isFetching={this.state.isFetching}
+                                handleSubmit={this.updateNote}
+                                {...props}
+                            />
+                        }
+                        />
                     <Route
                         path='/login'
                         render={props => 
