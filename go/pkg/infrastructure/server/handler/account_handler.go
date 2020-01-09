@@ -9,6 +9,7 @@ import (
 	"app/pkg/domain"
 	"app/pkg/infrastructure/auth"
 	"app/pkg/infrastructure/dcontext"
+	"app/pkg/infrastructure/server/logger"
 	"app/pkg/infrastructure/server/response"
 	"app/pkg/interface/controller"
 	"app/pkg/interface/repository"
@@ -49,6 +50,7 @@ func (ah *accountHandler) GetAccount(w http.ResponseWriter, r *http.Request) {
 
 	res, err := ah.AccountController.ShowAccount(userID)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
@@ -66,6 +68,7 @@ func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) 
 	var req controller.CreateAccountRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, domain.InternalServerError(err))
 		return
 	}
@@ -73,6 +76,7 @@ func (ah *accountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) 
 	// controllerを叩く
 	res, err := ah.AccountController.Add(req.ID, req.Name, req.Password, req.Mail)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
@@ -95,12 +99,14 @@ func (ah *accountHandler) UpdateAccount(w http.ResponseWriter, r *http.Request) 
 	var req controller.CreateAccountRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, domain.InternalServerError(err))
 		return
 	}
 
 	res, err := ah.AccountController.UpdateAccount(userID, req)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
@@ -114,6 +120,7 @@ func (ah *accountHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) 
 
 	err := ah.AccountController.DeleteAccount(userID)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
@@ -130,7 +137,8 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var req controller.LoginRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		response.HttpError(w, domain.BadRequest(err))
+		logger.Error(err)
+		response.HttpError(w, domain.InternalServerError(err))
 		return
 	}
 
@@ -141,6 +149,7 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 	// パスワードの認証
 	err = auth.PasswordVerify(res.Password, req.Password)
 	if err != nil {
+		logger.Warn(err)
 		response.HttpError(w, domain.Unauthorized(err))
 		return
 	}
@@ -148,6 +157,7 @@ func (ah *accountHandler) Login(w http.ResponseWriter, r *http.Request) {
 	// jwtの発行
 	token, err := auth.CreateToken(req.UserID)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, domain.InternalServerError(err))
 		return
 	}

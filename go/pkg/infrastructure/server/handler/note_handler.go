@@ -3,6 +3,7 @@ package handler
 import (
 	"app/pkg/domain"
 	"app/pkg/infrastructure/dcontext"
+	"app/pkg/infrastructure/server/logger"
 	"app/pkg/infrastructure/server/response"
 	"app/pkg/interface/controller"
 	"app/pkg/interface/repository"
@@ -43,6 +44,7 @@ func (nh *noteHandler) GetNoteByNoteID(w http.ResponseWriter, r *http.Request) {
 
 	res, err := nh.NoteController.ShowNoteByNoteID(userID, noteID)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
@@ -56,6 +58,7 @@ func (nh *noteHandler) GetNotes(w http.ResponseWriter, r *http.Request) {
 
 	res, err := nh.NoteController.ShowNotes(userID)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
@@ -74,12 +77,14 @@ func (nh *noteHandler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.Unmarshal(body, &req)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, domain.InternalServerError(err))
 		return
 	}
 
 	res, err := nh.NoteController.CreateNote(userID, req)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
@@ -100,12 +105,14 @@ func (nh *noteHandler) UpdateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.Unmarshal(body, &req)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, domain.InternalServerError(err))
 		return
 	}
 
 	res, err := nh.NoteController.UpdateNote(userID, noteID, req)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
@@ -120,6 +127,7 @@ func (nh *noteHandler) DeleteNote(w http.ResponseWriter, r *http.Request) {
 
 	err := nh.NoteController.DeleteNote(userID, noteID)
 	if err != nil {
+		logger.Error(err)
 		response.HttpError(w, err)
 		return
 	}
