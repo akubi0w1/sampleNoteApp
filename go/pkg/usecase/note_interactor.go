@@ -1,10 +1,11 @@
 package usecase
 
 import (
-	"app/pkg/domain"
 	"errors"
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
 )
 
 type noteInteractor struct {

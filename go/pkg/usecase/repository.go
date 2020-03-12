@@ -1,8 +1,9 @@
 package usecase
 
 import (
-	"app/pkg/domain"
 	"time"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
 )
 
 type AccountRepository interface {

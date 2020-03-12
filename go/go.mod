@@ -1,4 +1,4 @@
-module app
+module github.com/yawn-yawn-yawn/sampleNoteApp/go
 
 go 1.12
 

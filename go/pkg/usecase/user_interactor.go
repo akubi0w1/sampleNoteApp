@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"app/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
 )
 
 type userInteractor struct {

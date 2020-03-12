@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"app/pkg/usecase"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/usecase"
 )
 
 type userController struct {

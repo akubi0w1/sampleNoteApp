@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"app/pkg/domain"
-	"app/pkg/usecase"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/usecase"
 )
 
 type userRepository struct {

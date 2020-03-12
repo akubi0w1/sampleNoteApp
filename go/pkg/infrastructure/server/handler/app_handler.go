@@ -1,12 +1,13 @@
 package handler
 
 import (
-	"app/pkg/domain"
-	"app/pkg/infrastructure/server/middleware"
-	"app/pkg/infrastructure/server/response"
-	"app/pkg/interface/repository"
 	"errors"
 	"net/http"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/middleware"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/response"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/interface/repository"
 )
 
 type appHandler struct {

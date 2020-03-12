@@ -1,17 +1,18 @@
 package handler
 
 import (
-	"app/pkg/domain"
-	"app/pkg/infrastructure/dcontext"
-	"app/pkg/infrastructure/server/logger"
-	"app/pkg/infrastructure/server/response"
-	"app/pkg/interface/controller"
-	"app/pkg/interface/repository"
-	"app/pkg/usecase"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/dcontext"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/logger"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/response"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/interface/controller"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/interface/repository"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/usecase"
 )
 
 type noteHandler struct {

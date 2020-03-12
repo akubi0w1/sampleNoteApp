@@ -1,12 +1,13 @@
 package middleware
 
 import (
-	"app/pkg/domain"
-	"app/pkg/infrastructure/auth"
-	"app/pkg/infrastructure/dcontext"
-	"app/pkg/infrastructure/server/response"
 	"context"
 	"net/http"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/auth"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/dcontext"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/response"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
