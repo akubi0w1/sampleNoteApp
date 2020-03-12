@@ -32,8 +32,6 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
-      
-  /account/create:
     post:
       summary: 'create new account'
       description: 'create account. password hash. gen x-token.'
@@ -56,10 +54,7 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
-                
-    
-  /account/update:
-    post:
+    put:
       summary: 'update account infomation'
       tags: 
         - 'account'
@@ -82,25 +77,15 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
-                
-  /account/delete:
-    post:
+    delete:
       summary: 'delete account'
       tags: 
         - 'account'
       parameters: 
         - $ref: '#/components/parameters/AuthToken'
       responses:
-        '200':
-          description: 'return message'
-          content:
-            application/json:
-              schema:
-                type: 'object'
-                properties:
-                  message:
-                    type: 'string'
-                    example: 'success'
+        '204':
+          $ref: '#/components/responses/NoContent'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
@@ -175,6 +160,34 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: 'create new note'
+      description: 'create new note'
+      tags: 
+        - 'notes'
+      parameters: 
+        - $ref: '#/components/parameters/AuthToken'
+      requestBody:
+        description: 'infomation note'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNoteRequest'
+      responses:
+        '200':
+          description: 'return note info'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
         
   /notes/{id}:
     get:
@@ -198,37 +211,13 @@ paths:
                 $ref: '#/components/schemas/Note'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    
-  /notes/create:
-    post:
-      summary: 'create new note'
-      description: 'create new note'
-      tags: 
-        - 'notes'
-      parameters: 
-        - $ref: '#/components/parameters/AuthToken'
-      requestBody:
-        description: 'infomation note'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateNoteRequest'
-      responses:
-        '200':
-          description: 'return note info'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /notes/{id}/update:
-    post:
+    put:
       summary: 'update note'
       description: 'update note'
       tags: 
@@ -256,11 +245,13 @@ paths:
                 $ref: '#/components/schemas/Note'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    
-  /notes/{id}/delete:
-    post:
+    delete:
       summary: 'delete note'
       description: 'delete note'
       tags: 
@@ -274,18 +265,14 @@ paths:
             type: 'string'
         - $ref: '#/components/parameters/AuthToken'
       responses:
-        '200':
-          description: 'return message'
-          content:
-            application/json:
-              schema:
-                type: 'object'
-                properties:
-                  message:
-                    type: 'string'
-                    example: 'success'
+        '204':
+          description: 'no content'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
         '500':
           $ref: '#/components/responses/InternalServerError'
   
@@ -300,7 +287,7 @@ components:
         name:
           type: 'string'
           description: 'user_name'
-        email:
+        mail:
           type: 'string'
           description: 'mail address'
         created_at:
@@ -339,6 +326,8 @@ components:
           type: 'string'
         name:
           type: 'string'
+        mail:
+          type: 'string'
         password:
           type: 'string'
     UpdateNoteRequest:
@@ -356,6 +345,8 @@ components:
       schema:
         type: 'string'
   responses:
+    NoContent:
+      description: 'no content'
     BadRequest:
       description: 'bad request'
       content:
@@ -365,6 +356,26 @@ components:
               - $ref: '#/components/schemas/ErrorResponse'
             example: 
               code: 400
+              message: 'error content'
+    Unauthorized:
+      description: 'unauthenticated'
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorResponse'
+            example: 
+              code: 401
+              message: 'error content'
+    MethodNotAllowed:
+      description: 'method not allowed'
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorResponse'
+            example: 
+              code: 405
               message: 'error content'
     InternalServerError:
       description: 'internal server error'

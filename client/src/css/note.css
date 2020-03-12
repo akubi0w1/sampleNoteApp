@@ -1,0 +1,144 @@
+html {
+    height: 100%;
+    position: relative;
+}
+
+body {
+    margin: 0;
+    background-color: #E3F2FD;
+    height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.2em;
+}
+
+.h1, .h2 {
+    display: inline-block;
+}
+
+.btn{
+    border-width: 2px;
+    border-radius: 5px;
+    padding: .1em .4em;
+    font-size: 1em;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    outline: none;
+}
+
+.btn-primary{
+    background-color: #2196F3;
+    color: #E3F2FD;
+    border-color: #2196F3;
+}
+
+.input-text {
+    font-size: 1em;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+    padding: .2em .3em;
+}
+
+.edit-text {
+    font-size: 1em;
+    padding: .2em .2em;
+    border: none;
+    border-bottom: 2px solid #2196F3;
+    background-color: transparent;
+    outline: none;
+}
+
+.input-title{
+    font-size: 1em;
+    padding: .3em .3em;
+    border: 2px solid #ccc;
+    outline: none;
+    border-radius: 3px;
+}
+
+.input-content {
+    font-size: 1em;
+    padding: .5em .3em;
+    border: 2px solid #ccc;
+    outline: none;
+    border-radius: 3px;
+    height: 300px;
+    width: 500px;
+    resize: none;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.ml-10{
+    margin-left: 10px;
+}
+
+.header {
+    position: relative;
+    background-color: #2196F3;
+    height: 50px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    color: #E3F2FD;
+    font-size: x-large;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.header .label {
+
+}
+
+.header .icon {
+    display: inline-block;
+    background-color: #E3F2FD;
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    position: absolute;
+    right: .5em;
+}
+
+.header .back {
+    position: absolute;   
+    left: 1.0em;
+}
+
+.header .back a {
+    color: #E3F2FD;
+    text-decoration: none;
+}
+
+.header .link {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: #E3F2FD;
+}
+
+
+.footer {
+    display: flex;
+    height: 45px;
+    background-color: #C51162;
+    width: 100%;
+    padding: 0 2em;
+}
+
+.content {
+    padding: 1.5em 4em;
+    font-size: 18px;
+}
+
+.note-list-item a{
+    text-decoration: none;
+    color: #000;
+}
+
+.note-list-item a:hover {
+    color: #C51162;
+}
