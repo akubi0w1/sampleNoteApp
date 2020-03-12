@@ -1,14 +1,15 @@
 package handler
 
 import (
-	"app/pkg/domain"
-	"app/pkg/infrastructure/server/response"
-	"app/pkg/interface/controller"
-	"app/pkg/interface/repository"
-	"app/pkg/usecase"
 	"errors"
 	"net/http"
 	"strings"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/response"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/interface/controller"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/interface/repository"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/usecase"
 )
 
 type userHandler struct {

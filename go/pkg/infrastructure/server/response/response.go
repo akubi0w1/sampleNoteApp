@@ -1,9 +1,10 @@
 package response
 
 import (
-	"app/pkg/domain"
 	"encoding/json"
 	"net/http"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
 )
 
 func Success(w http.ResponseWriter, data interface{}) {

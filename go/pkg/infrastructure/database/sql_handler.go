@@ -1,10 +1,11 @@
 package database
 
 import (
-	"app/pkg/interface/repository"
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/interface/repository"
 )
 
 type sqlHandler struct {

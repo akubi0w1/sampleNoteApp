@@ -1,10 +1,10 @@
 package main
 
 import (
-	"app/pkg/infrastructure/database"
-	"app/pkg/infrastructure/server"
-	"app/pkg/infrastructure/server/handler"
-	"app/pkg/infrastructure/server/router"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/database"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/handler"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/router"
 )
 
 func main() {

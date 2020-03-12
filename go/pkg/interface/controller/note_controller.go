@@ -1,9 +1,10 @@
 package controller
 
 import (
-	"app/pkg/domain"
-	"app/pkg/usecase"
 	"errors"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/usecase"
 )
 
 type noteController struct {

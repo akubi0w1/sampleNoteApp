@@ -1,9 +1,10 @@
 package repository
 
 import (
-	"app/pkg/domain"
-	"app/pkg/usecase"
 	"time"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/usecase"
 )
 
 type noteRepository struct {

@@ -1,9 +1,10 @@
 package usecase
 
 import (
-	"app/pkg/domain"
-	"app/pkg/infrastructure/auth"
 	"time"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/domain"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/auth"
 )
 
 type accountInteractor struct {

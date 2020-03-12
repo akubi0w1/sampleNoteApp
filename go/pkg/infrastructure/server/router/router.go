@@ -1,9 +1,10 @@
 package router
 
 import (
-	"app/pkg/infrastructure/server"
-	"app/pkg/infrastructure/server/handler"
 	"net/http"
+
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server"
+	"github.com/yawn-yawn-yawn/sampleNoteApp/go/pkg/infrastructure/server/handler"
 )
 
 type router struct {
